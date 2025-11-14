@@ -20,5 +20,16 @@
 
 #### Here are real-world examples:
 
+| AI Operation | Internal Math | GPU Kernel Type |
+|--------------|---------------|-----------------|
+| Dense (Fully Connected) layer | Y=W×X+b | GEMM (General Matrix Multiply) |
+| Convolution | Sliding window dot-products | Matrix multiply after "im2col" transform |
+| Attention mechanism (Transformers) | QKᵀ and AV | Matrix multiplications |
+| Backpropagation | Gradient = dL/dW=XᵀdY | Matrix multiplications again |
+
+
+
+
+
 
 

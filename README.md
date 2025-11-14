@@ -104,6 +104,8 @@ In fact, over 90% of the FLOPs (floating point operations) in models like GPT or
 nano ~/mpi_cuda_matrix_mul.cu
 ```
 
+<img width="1600" height="900" alt="Image" src="https://github.com/user-attachments/assets/c80b138b-237a-432d-ab03-9df78938ea57" />
+
 #### <ins>mpi_cuda_matrix_mul.cu</ins> has the CUDA code below:
 
 ```python
@@ -205,6 +207,12 @@ int main(int argc, char **argv) {
 
 ```
 
+<img width="1600" height="900" alt="Image" src="https://github.com/user-attachments/assets/412b7f92-82ef-4879-9920-bb343180935f" />
+
+#### Save and give file the necessary permission
+
+<img width="1600" height="900" alt="Image" src="https://github.com/user-attachments/assets/c06204a6-c3e7-48d7-b8f0-f1484c5eddfc" />
+
 ---
 
 ## Step 2 — Compile with NVCC + MPI
@@ -214,6 +222,8 @@ int main(int argc, char **argv) {
 ```python
 nvcc -ccbin mpicxx ~/mpi_cuda_matrix_mul.cu -o ~/mpi_cuda_matrix_mul
 ```
+
+<img width="1600" height="900" alt="Image" src="https://github.com/user-attachments/assets/33153809-369b-46c6-8f69-e21d1495c0c9" />
 
 ---
 
@@ -225,6 +235,8 @@ nvcc -ccbin mpicxx ~/mpi_cuda_matrix_mul.cu -o ~/mpi_cuda_matrix_mul
 mpirun -np 2 ~/mpi_cuda_matrix_mul
 ```
 
+<img width="1600" height="900" alt="Image" src="https://github.com/user-attachments/assets/d091f132-f325-42f1-8488-f91dc2354e31" />
+
 #### Example Output:
 
 ```python
@@ -234,6 +246,8 @@ mpirun -np 2 ~/mpi_cuda_matrix_mul
 [Status] Simulation complete on 1 GPU(s).
 
 ```
+
+<img width="1600" height="900" alt="Image" src="https://github.com/user-attachments/assets/e9f4c349-1aa8-4b22-9b45-01c32af2510b" />
 
 ---
 

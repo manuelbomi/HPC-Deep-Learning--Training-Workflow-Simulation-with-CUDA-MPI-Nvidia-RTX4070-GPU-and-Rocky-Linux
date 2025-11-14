@@ -215,8 +215,73 @@ int main(int argc, char **argv) {
 nvcc -ccbin mpicxx ~/mpi_cuda_matrix_mul.cu -o ~/mpi_cuda_matrix_mul
 ```
 
+---
+
+## Step 3 — Run with Multiple Processes
+
+#### Run with 2 or more MPI processes:
+
+```python
+mpirun -np 2 ~/mpi_cuda_matrix_mul
+```
+
+#### Example Output:
+
+```python
+[HPC Simulation] Matrix size: 256x256
+[HPC Simulation] Total processes: 2
+[Result] Aggregated global sum of outputs: 8388608.00
+[Status] Simulation complete on 1 GPU(s).
+
+```
+
+---
+
+## Similarity of Our Approach to Real-world HPC AI systems:
+
+| Concept | Real Cluster Equivalent | What Happens Here |
+|---------|------------------------|-------------------|
+| MPI process | Worker node / GPU | Each process simulates a node computing its own batch |
+| CUDA kernel | GPU computation | Each GPU performs matrix multiply (like forward pass) |
+| MPI Reduce | Gradient aggregation | Combines all results like gradient averaging |
+| CUDA memory | GPU VRAM | Data is copied in/out of GPU memory manually |
+| NVCC + MPI | Training framework backend | Equivalent to Horovod or PyTorch distributed backend |
+
+#### The table below connect the pieces in our CUDA+MPI code shared in this project to a real AI training job:
+
+| In Our Code | In Deep Learning | Explanation |
+|-------------|------------------|-------------|
+| `matrixMul<<<>>>` | Forward pass (e.g., W * X) | Each GPU computes local tensor results |
+| `MPI_Reduce` | Gradient aggregation / all-reduce | Combines partial results (synchronizes models) |
+| `cudaMemcpy` | Data movement between GPU and CPU | Similar to how tensors move between host and device memory |
+| `MPI_Init` / `MPI_Finalize` | Training process coordination | Equivalent to distributed PyTorch or Horovod initialization |
+| Multiple ranks (`-np 2`) | Multi-GPU training nodes | Each process simulates a GPU worker |
+
+---
+
+## How to Improve on this project
+
+| Goal | Description |
+|------|-------------|
+| Scale up N | Increase matrix size to test performance scaling. |
+| Add more MPI processes | Run with `-np 4` to simulate a 4-GPU cluster. |
+| Add random initialization | Replace constants with random weights. |
+| Loop training iterations | Add multiple passes to simulate epochs. |
+| Benchmark | Measure computation and communication time with `MPI_Wtime()`. |
+
+---
 
 
+
+
+## Summary
+
+#### This project simulates:
+    • A distributed deep learning workflow.
+    • Real HPC GPU operations under MPI coordination.
+    • A cluster-like workflow on a single system using Rocky Linux.
+    
+#### The ideas shared in this project are similar to using CUDA, MPI, and HPC workflows pn Nvidia H100/A100 clusters and integrate later with Slurm job schedulers.
 
 
 

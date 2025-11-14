@@ -78,6 +78,16 @@ In fact, over 90% of the FLOPs (floating point operations) in models like GPT or
 
 ---
 
+## Our Contribution to HPC, GPU, CUDA & AI Model Training
+
+#### Our approach and computations in this project are similar to the architecture pattern used in:
+
+    • Supercomputers like Frontier, Perlmutter, Selene (NVIDIA’s own HPC AI cluster)
+    • Cloud AI platforms (AWS P4d, Azure NDv4, Google TPU Pods)
+    • Enterprise RHEL / Rocky Linux clusters running Slurm
+    
+#### The project here runs on an Nvidia Geforce RTX 4070 GPU,  but the approach is conceptually identical to what runs at petascale or exascale
+
 
 
 

@@ -88,6 +88,15 @@ In fact, over 90% of the FLOPs (floating point operations) in models like GPT or
     
 #### The project here runs on an Nvidia Geforce RTX 4070 GPU,  but the approach is conceptually identical to what runs at petascale or exascale
 
+#### Our Approach here showcase:
+    • How HPC frameworks distribute workloads (MPI)
+    • How GPUs handle neural network-style computation (CUDA)
+    • How parallel processes communicate results (MPI Reduce)
+    • How to prepare for Slurm cluster job submission later. For the slurm extension of this work, please check: 
+
+---
+
+
 
 
 

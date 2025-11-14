@@ -209,7 +209,7 @@ int main(int argc, char **argv) {
 
 ## Step 2 — Compile with NVCC + MPI
 
-#### We use nvcc -ccbin mpicxx so that NVCC uses MPI’s C++ compiler as the host compiler.
+#### We use <ins>nvcc -ccbin mpicxx</ins> so that NVCC uses MPI’s C++ compiler as the host compiler.
 
 ```python
 nvcc -ccbin mpicxx ~/mpi_cuda_matrix_mul.cu -o ~/mpi_cuda_matrix_mul

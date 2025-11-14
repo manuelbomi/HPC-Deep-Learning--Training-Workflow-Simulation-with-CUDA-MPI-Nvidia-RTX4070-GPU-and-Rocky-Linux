@@ -27,6 +27,8 @@
 | Attention mechanism (Transformers) | QKᵀ and AV | Matrix multiplications |
 | Backpropagation | Gradient = dL/dW=XᵀdY | Matrix multiplications again |
 
+In fact, over 90% of the FLOPs (floating point operations) in models like GPT or ResNet are matrix multiplications.
+
 
 
 

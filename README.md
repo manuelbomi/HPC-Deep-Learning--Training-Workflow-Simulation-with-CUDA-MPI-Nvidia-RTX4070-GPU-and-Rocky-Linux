@@ -96,6 +96,124 @@ In fact, over 90% of the FLOPs (floating point operations) in models like GPT or
 
 ---
 
+## Step 1 — Write the CUDA + MPI Code
+
+#### On Rocky Linux, we create a file named mpi_cuda_matrix_mul.cu using nano (not cat).
+
+```python
+nano ~/mpi_cuda_matrix_mul.cu
+```
+
+#### <ins>mpi_cuda_matrix_mul.cu</ins> has the CUDA code below:
+
+```python
+#include <mpi.h>
+#include <stdio.h>
+#include <cuda_runtime.h>
+
+// -----------------------------
+// CUDA KERNEL: Matrix Multiply
+// -----------------------------
+// Each thread computes one element of the resulting matrix C
+// C = A * B
+__global__ void matrixMul(const float *A, const float *B, float *C, int N) {
+    int row = blockIdx.y * blockDim.y + threadIdx.y;
+    int col = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (row < N && col < N) {
+        float sum = 0.0f;
+        for (int k = 0; k < N; ++k)
+            sum += A[row * N + k] * B[k * N + col];
+        C[row * N + col] = sum;
+    }
+}
+
+// -----------------------------
+// MAIN PROGRAM
+// -----------------------------
+int main(int argc, char **argv) {
+    MPI_Init(&argc, &argv);
+
+    int world_rank, world_size;
+    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+
+    // Determine number of GPUs and assign one per MPI process
+    int deviceCount;
+    cudaGetDeviceCount(&deviceCount);
+    cudaSetDevice(world_rank % deviceCount);
+
+    const int N = 256;  // Matrix size (N x N)
+    const size_t bytes = N * N * sizeof(float);
+
+    // Allocate and initialize host matrices
+    float *h_A = (float*)malloc(bytes);
+    float *h_B = (float*)malloc(bytes);
+    float *h_C = (float*)malloc(bytes);
+
+    // Fill matrices A and B with simple patterns
+    for (int i = 0; i < N * N; i++) {
+        h_A[i] = 1.0f + world_rank;  // Different value per process
+        h_B[i] = 0.5f;
+    }
+
+    // Allocate GPU memory
+    float *d_A, *d_B, *d_C;
+    cudaMalloc(&d_A, bytes);
+    cudaMalloc(&d_B, bytes);
+    cudaMalloc(&d_C, bytes);
+
+    // Copy matrices to GPU
+    cudaMemcpy(d_A, h_A, bytes, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_B, h_B, bytes, cudaMemcpyHostToDevice);
+
+    // Define CUDA grid and block dimensions
+    dim3 threadsPerBlock(16, 16);
+    dim3 blocksPerGrid((N + 15) / 16, (N + 15) / 16);
+
+    // Launch CUDA kernel for matrix multiplication
+    matrixMul<<<blocksPerGrid, threadsPerBlock>>>(d_A, d_B, d_C, N);
+    cudaDeviceSynchronize();
+
+    // Copy results back to host
+    cudaMemcpy(h_C, d_C, bytes, cudaMemcpyDeviceToHost);
+
+    // Compute local sum of results (simulating model aggregation)
+    float local_sum = 0.0f;
+    for (int i = 0; i < N * N; i++)
+        local_sum += h_C[i];
+
+    // Reduce (sum) all results from all processes into process 0
+    float global_sum = 0.0f;
+    MPI_Reduce(&local_sum, &global_sum, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
+
+    if (world_rank == 0) {
+        printf("\n[HPC Simulation] Matrix size: %dx%d\n", N, N);
+        printf("[HPC Simulation] Total processes: %d\n", world_size);
+        printf("[Result] Aggregated global sum of outputs: %.2f\n", global_sum);
+        printf("[Status] Simulation complete on %d GPU(s).\n\n", deviceCount);
+    }
+
+    // Clean up
+    cudaFree(d_A); cudaFree(d_B); cudaFree(d_C);
+    free(h_A); free(h_B); free(h_C);
+
+    MPI_Finalize();
+    return 0;
+}
+
+```
+
+---
+
+## Step 2 — Compile with NVCC + MPI
+
+#### We use nvcc -ccbin mpicxx so that NVCC uses MPI’s C++ compiler as the host compiler.
+
+```python
+nvcc -ccbin mpicxx ~/mpi_cuda_matrix_mul.cu -o ~/mpi_cuda_matrix_mul
+```
+
 
 
 

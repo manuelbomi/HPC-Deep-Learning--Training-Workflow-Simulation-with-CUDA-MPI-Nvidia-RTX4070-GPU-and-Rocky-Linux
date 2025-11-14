@@ -92,7 +92,7 @@ In fact, over 90% of the FLOPs (floating point operations) in models like GPT or
     • How HPC frameworks distribute workloads (MPI)
     • How GPUs handle neural network-style computation (CUDA)
     • How parallel processes communicate results (MPI Reduce)
-    • How to prepare for Slurm cluster job submission later. For the slurm extension of this work, please check: 
+    • How to prepare for Slurm cluster job submission later. For the slurm extension of this work, please check: https://github.com/manuelbomi/End-to-End-HPC-AI-Training-Simulation-with-CUDA-MPI-and-Slurm-on-Rocky-Linux-----RHEL-Compatible
 
 ---
 

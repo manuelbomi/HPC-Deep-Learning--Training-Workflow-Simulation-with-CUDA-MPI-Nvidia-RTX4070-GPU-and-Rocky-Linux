@@ -98,6 +98,11 @@ In fact, over 90% of the FLOPs (floating point operations) in models like GPT or
 
 ## Step 1 — Write the CUDA + MPI Code
 
+#### Check available GPU (nvidia-smi)
+
+<img width="1600" height="900" alt="Image" src="https://github.com/user-attachments/assets/3fb53300-81ee-4704-be9e-9fde28f532ac" />
+
+
 #### On Rocky Linux, we create a file named mpi_cuda_matrix_mul.cu using nano (not cat).
 
 ```python
